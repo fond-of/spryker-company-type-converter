@@ -12,7 +12,8 @@
     "php": ">=7.1",
     "spryker/company-role": "^1.0",
     "spryker/permission": "^1.2",
-    "fond-of-spryker/company-type": "dev-master"
+    "spryker/company-user": "^2.0.0",
+    "fond-of-spryker/company-type-role": "dev-master"
   },
   "require-dev": {
     "codeception/codeception": "^2.4",

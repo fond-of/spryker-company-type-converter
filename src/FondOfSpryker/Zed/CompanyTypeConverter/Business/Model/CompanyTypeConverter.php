@@ -1,0 +1,187 @@
+<?php
+
+namespace FondOfSpryker\Zed\CompanyTypeConverter\Business\Model;
+
+use FondOfSpryker\Zed\CompanyTypeConverter\Business\CompanyTypeRoleWriterInterface;
+use FondOfSpryker\Zed\CompanyTypeConverter\CompanyTypeConverterConfig;
+use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeInterface;
+use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeInterface;
+use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyUserFacadeInterface;
+use Generated\Shared\Transfer\CompanyResponseTransfer;
+use Generated\Shared\Transfer\CompanyRoleCollectionTransfer;
+use Generated\Shared\Transfer\CompanyRoleTransfer;
+use Generated\Shared\Transfer\CompanyTransfer;
+use Generated\Shared\Transfer\CompanyTypeTransfer;
+use Generated\Shared\Transfer\CompanyUserCriteriaFilterTransfer;
+use Generated\Shared\Transfer\CompanyUserTransfer;
+use Spryker\Zed\Kernel\Persistence\EntityManager\TransactionTrait;
+
+class CompanyTypeConverter implements CompanyTypeConverterInterface
+{
+    use TransactionTrait;
+
+    /**
+     * @var \FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeConverterPluginExecutorInterface
+     */
+    protected $companyTypeConverterPluginExecutor;
+
+    /**
+     * @var \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeInterface
+     */
+    protected $companyTypeFacade;
+
+    /**
+     * @var \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeInterface
+     */
+    protected $companyRoleFacade;
+
+    /**
+     * @var \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyUserFacadeInterface
+     */
+    protected $companyUserFacade;
+
+    /**
+     * @var \FondOfSpryker\Zed\CompanyTypeConverter\CompanyTypeConverterConfig
+     */
+    protected $config;
+
+    /**
+     * @var \FondOfSpryker\Zed\CompanyTypeConverter\Business\CompanyTypeRoleWriterInterface
+     */
+    protected $companyTypeRoleWriter;
+
+    /**
+     *
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeInterface $companyTypeFacade
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeInterface $companyRoleFacade
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyUserFacadeInterface $companyUserFacade
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Business\CompanyTypeRoleWriterInterface $companyTypeRoleWriter
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\CompanyTypeConverterConfig $config
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeConverterPluginExecutorInterface $companyTypeConverterPluginExecutor
+     */
+    public function __construct(
+        CompanyTypeConverterToCompanyTypeFacadeInterface $companyTypeFacade,
+        CompanyTypeConverterToCompanyRoleFacadeInterface $companyRoleFacade,
+        CompanyTypeConverterToCompanyUserFacadeInterface $companyUserFacade,
+        CompanyTypeRoleWriterInterface $companyTypeRoleWriter,
+        CompanyTypeConverterConfig $config,
+        CompanyTypeConverterPluginExecutorInterface $companyTypeConverterPluginExecutor
+    ) {
+        $this->companyTypeFacade = $companyTypeFacade;
+        $this->companyRoleFacade = $companyRoleFacade;
+        $this->companyUserFacade = $companyUserFacade;
+        $this->config = $config;
+        $this->companyTypeConverterPluginExecutor = $companyTypeConverterPluginExecutor;
+        $this->companyTypeRoleWriter = $companyTypeRoleWriter;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
+     *
+     * @return \Generated\Shared\Transfer\CompanyResponseTransfer
+     */
+    public function convertCompanyType(
+        CompanyTransfer $companyTransfer
+    ): CompanyResponseTransfer {
+        return $this->getTransactionHandler()->handleTransaction(function () use ($companyTransfer) {
+            return $this->executeConvertCompanyTypeTransaction($companyTransfer);
+        });
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
+     *
+     * @return \Generated\Shared\Transfer\CompanyResponseTransfer
+     */
+    public function executeConvertCompanyTypeTransaction(
+        CompanyTransfer $companyTransfer
+    ): CompanyResponseTransfer {
+        $companyTransfer = $this->companyTypeConverterPluginExecutor
+            ->executeCompanyTypeConverterPreSavePlugins($companyTransfer);
+
+        $companyRoleCollectionTransfer = $this->companyTypeRoleWriter->updateCompanyRoles($companyTransfer);
+
+        $companyUserCollectionTransfer = $this->companyUserFacade->getCompanyUserCollection(
+            (new CompanyUserCriteriaFilterTransfer())->setIdCompany($companyTransfer->getIdCompany())
+        );
+
+        foreach ($companyUserCollectionTransfer->getCompanyUsers() as $companyUserTransfer) {
+            $this->assignDefaultCompanyRoleToCompanyUser(
+                $companyUserTransfer,
+                $companyTransfer,
+                $companyRoleCollectionTransfer
+            );
+        }
+
+        $companyTransfer = $this->companyTypeConverterPluginExecutor
+            ->executeCompanyTypeConverterPostSavePlugins($companyTransfer);
+
+        return (new CompanyResponseTransfer())
+            ->setIsSuccessful(true)
+            ->setCompanyTransfer($companyTransfer);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CompanyUserTransfer $companyUserTransfer
+     * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
+     * @param \Generated\Shared\Transfer\CompanyRoleCollectionTransfer $companyRoleCollectionTransfer
+     *
+     * @return void
+     */
+    protected function assignDefaultCompanyRoleToCompanyUser(
+        CompanyUserTransfer $companyUserTransfer,
+        CompanyTransfer $companyTransfer,
+        CompanyRoleCollectionTransfer $companyRoleCollectionTransfer
+    ): void {
+        $companyTypeResponseTransfer = $this->companyTypeFacade->findCompanyTypeById(
+            (new CompanyTypeTransfer())->setIdCompanyType($companyTransfer->getFkCompanyType())
+        );
+
+        $companyUserCompanyRoleCollection = new CompanyRoleCollectionTransfer();
+        foreach ($companyUserTransfer->getCompanyRoleCollection()->getRoles() as $companyRoleTransfer) {
+            $defaultCompanyRoleTransfer = $this->getDefaultCompanyRoleFromCompanyRoleCollection(
+                $companyRoleTransfer,
+                $companyRoleCollectionTransfer,
+                $companyTypeResponseTransfer->getCompanyTypeTransfer()
+            );
+
+            if ($defaultCompanyRoleTransfer === null) {
+                continue;
+            }
+
+            $companyUserCompanyRoleCollection->addRole($defaultCompanyRoleTransfer);
+        }
+
+        $this->companyRoleFacade->saveCompanyUser(
+            $companyUserTransfer->setCompanyRoleCollection($companyUserCompanyRoleCollection)
+        );
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CompanyRoleTransfer $roleTransfer
+     * @param \Generated\Shared\Transfer\CompanyRoleCollectionTransfer $companyRoleCollectionTransfer
+     * @param \Generated\Shared\Transfer\CompanyTypeTransfer $companyTypeTransfer
+     *
+     * @return \Generated\Shared\Transfer\CompanyRoleTransfer|null
+     */
+    protected function getDefaultCompanyRoleFromCompanyRoleCollection(
+        CompanyRoleTransfer $roleTransfer,
+        CompanyRoleCollectionTransfer $companyRoleCollectionTransfer,
+        CompanyTypeTransfer $companyTypeTransfer
+    ): ?CompanyRoleTransfer {
+        $companyTypeDefaultRoleMapping = $this->config
+            ->getCompanyTypeDefaultRoleMapping($companyTypeTransfer->getName());
+
+        if (isset($companyTypeDefaultRoleMapping[$roleTransfer->getName()]) === false) {
+            return null;
+        }
+
+        foreach ($companyRoleCollectionTransfer->getRoles() as $companyRoleTransfer) {
+            if ($companyRoleTransfer->getName() === $companyTypeDefaultRoleMapping[$roleTransfer->getName()]) {
+                return $companyRoleTransfer;
+            }
+        }
+
+        return null;
+    }
+}
