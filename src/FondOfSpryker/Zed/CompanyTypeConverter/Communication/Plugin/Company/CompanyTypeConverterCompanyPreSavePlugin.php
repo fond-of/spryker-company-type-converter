@@ -8,6 +8,7 @@ use Spryker\Zed\Kernel\Communication\AbstractPlugin;
 
 /**
  * @method \FondOfSpryker\Zed\CompanyTypeConverter\Business\CompanyTypeConverterFacadeInterface getFacade()
+ * @method \FondOfSpryker\Zed\CompanyTypeConverter\CompanyTypeConverterConfig getConfig()
  */
 class CompanyTypeConverterCompanyPreSavePlugin extends AbstractPlugin implements CompanyPreSavePluginInterface
 {
@@ -23,7 +24,6 @@ class CompanyTypeConverterCompanyPreSavePlugin extends AbstractPlugin implements
      */
     public function preSaveValidation(CompanyResponseTransfer $companyResponseTransfer): CompanyResponseTransfer
     {
-
         $companyTransfer = $companyResponseTransfer->getCompanyTransfer();
 
         if ($companyTransfer === null || $companyTransfer->getFkCompanyType() === null) {
@@ -32,13 +32,15 @@ class CompanyTypeConverterCompanyPreSavePlugin extends AbstractPlugin implements
 
         $currentCompanyTransfer = $this->getFacade()->findCompanyById($companyTransfer);
 
-        if ($currentCompanyTransfer === null
-            || $currentCompanyTransfer->getFkCompanyType() === $companyTransfer->getFkCompanyType()) {
+        if (
+            $currentCompanyTransfer === null
+            || $currentCompanyTransfer->getFkCompanyType() === $companyTransfer->getFkCompanyType()
+        ) {
             return $companyResponseTransfer;
         }
 
         $companyTransfer->setIsCompanyTypeModified(true);
-        $companyTransfer->setIdOldCompanyType($currentCompanyTransfer->getFkCompanyType());
+        $companyTransfer->setFkOldCompanyType($currentCompanyTransfer->getFkCompanyType());
 
         return $companyResponseTransfer;
     }

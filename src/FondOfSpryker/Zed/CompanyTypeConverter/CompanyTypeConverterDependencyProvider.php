@@ -30,7 +30,6 @@ class CompanyTypeConverterDependencyProvider extends AbstractBundleDependencyPro
     {
         $container = parent::provideBusinessLayerDependencies($container);
 
-        $container = $this->addCompanyFacade($container);
         $container = $this->addPermissionFacade($container);
         $container = $this->addCompanyTypeFacade($container);
         $container = $this->addCompanyTypeRoleFacade($container);
