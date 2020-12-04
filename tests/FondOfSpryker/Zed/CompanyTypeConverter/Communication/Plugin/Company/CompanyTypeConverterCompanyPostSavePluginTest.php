@@ -29,7 +29,6 @@ class CompanyTypeConverterCompanyPostSavePluginTest extends Unit
      */
     protected $companyTypeConverterCompanyPostSavePlugin;
 
-
     /**
      * @return void
      */
@@ -49,7 +48,7 @@ class CompanyTypeConverterCompanyPostSavePluginTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->companyTypeConverterCompanyPostSavePlugin = new CompanyTypeConverterCompanyPostSavePlugin());
+        $this->companyTypeConverterCompanyPostSavePlugin = new CompanyTypeConverterCompanyPostSavePlugin();
         $this->companyTypeConverterCompanyPostSavePlugin->setFacade($this->companyTypeConverterFacadeMock);
     }
 
@@ -74,7 +73,6 @@ class CompanyTypeConverterCompanyPostSavePluginTest extends Unit
         $this->companyTypeConverterFacadeMock->expects($this->atLeastOnce())
             ->method('convertCompanyType')
             ->willReturn($this->companyResponseTransferMock);
-
 
         $companyResponseTransfer = $this->companyTypeConverterCompanyPostSavePlugin
             ->postSave($this->companyResponseTransferMock);
