@@ -51,6 +51,7 @@ class CompanyTypeConverterCompanyPreSavePluginTest extends Unit
 
         $this->companyTransferMock = $this->getMockBuilder(CompanyTransfer::class)
             ->disableOriginalConstructor()
+            ->onlyMethods(['getFkCompanyType','setIsCompanyTypeModified', 'setFkOldCompanyType'])
             ->getMock();
 
         $this->currentCompanyTransferMock = $this->getMockBuilder(CompanyTransfer::class)

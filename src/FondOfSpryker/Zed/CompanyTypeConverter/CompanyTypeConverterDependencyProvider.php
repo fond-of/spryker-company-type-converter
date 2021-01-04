@@ -2,6 +2,7 @@
 
 namespace FondOfSpryker\Zed\CompanyTypeConverter;
 
+use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyFacadeBridge;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeBridge;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeBridge;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeRoleFacadeBridge;
@@ -13,6 +14,7 @@ use Spryker\Zed\Kernel\Container;
 class CompanyTypeConverterDependencyProvider extends AbstractBundleDependencyProvider
 {
     public const FACADE_PERMISSION = 'FACADE_PERMISSION';
+    public const FACADE_COMPANY = 'FACADE_COMPANY';
     public const FACADE_COMPANY_TYPE = 'FACADE_COMPANY_TYPE';
     public const FACADE_COMPANY_TYPE_ROLE = 'FACADE_COMPANY_TYPE_ROLE';
     public const FACADE_COMPANY_ROLE = 'FACADE_COMPANY_ROLE';
@@ -31,6 +33,7 @@ class CompanyTypeConverterDependencyProvider extends AbstractBundleDependencyPro
         $container = parent::provideBusinessLayerDependencies($container);
 
         $container = $this->addPermissionFacade($container);
+        $container = $this->addCompanyFacade($container);
         $container = $this->addCompanyTypeFacade($container);
         $container = $this->addCompanyTypeRoleFacade($container);
         $container = $this->addCompanyRoleFacade($container);
@@ -56,6 +59,23 @@ class CompanyTypeConverterDependencyProvider extends AbstractBundleDependencyPro
 
         return $container;
     }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addCompanyFacade(Container $container): Container
+    {
+        $container[static::FACADE_COMPANY] = function (Container $container) {
+            return new CompanyTypeConverterToCompanyFacadeBridge(
+                $container->getLocator()->company()->facade()
+            );
+        };
+
+        return $container;
+    }
+
 
     /**
      * @param \Spryker\Zed\Kernel\Container $container

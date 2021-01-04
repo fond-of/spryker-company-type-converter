@@ -2,15 +2,22 @@
 
 namespace FondOfSpryker\Zed\CompanyTypeConverter\Business;
 
+use FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyReader;
+use FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyReaderInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeConverter;
+use FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeConverterInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeConverterPluginExecutor;
 use FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeConverterPluginExecutorInterface;
+use FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeRoleWriter;
+use FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeRoleWriterInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\CompanyTypeConverterDependencyProvider;
+use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyFacadeInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeRoleFacadeInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyUserFacadeInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToPermissionFacadeInterface;
+use PHPUnit\Util\Exception;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 
 /**
@@ -20,9 +27,9 @@ use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 class CompanyTypeConverterBusinessFactory extends AbstractBusinessFactory
 {
     /**
-     * @return \FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeConverter
+     * @return \FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeConverterInterface
      */
-    public function createCompanyTypeConverter(): CompanyTypeConverter
+    public function createCompanyTypeConverter(): CompanyTypeConverterInterface
     {
         return new CompanyTypeConverter(
             $this->getCompanyTypeFacade(),
@@ -34,6 +41,10 @@ class CompanyTypeConverterBusinessFactory extends AbstractBusinessFactory
         );
     }
 
+    /**
+     * @return \FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeRoleWriterInterface
+     * @throws \Spryker\Zed\Kernel\Exception\Container\ContainerKeyNotFoundException
+     */
     protected function createCompanyTypeRoleWriter(): CompanyTypeRoleWriterInterface
     {
         return new CompanyTypeRoleWriter(
@@ -42,6 +53,17 @@ class CompanyTypeConverterBusinessFactory extends AbstractBusinessFactory
             $this->getCompanyTypeRoleFacade(),
             $this->getPermissionFacade(),
             $this->getConfig()
+        );
+    }
+
+    /**
+     * @return \FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyReaderInterface
+     * @throws \Spryker\Zed\Kernel\Exception\Container\ContainerKeyNotFoundException
+     */
+    public function createCompanyReader(): CompanyReaderInterface
+    {
+        return new CompanyReader(
+            $this->getCompanyFacade()
         );
     }
 
@@ -73,7 +95,17 @@ class CompanyTypeConverterBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
+     * @return \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyFacadeInterface
+     * @throws \Spryker\Zed\Kernel\Exception\Container\ContainerKeyNotFoundException
+     */
+    protected function getCompanyFacade(): CompanyTypeConverterToCompanyFacadeInterface
+    {
+        return $this->getProvidedDependency(CompanyTypeConverterDependencyProvider::FACADE_COMPANY);
+    }
+
+    /**
      * @return \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToPermissionFacadeInterface
+     * @throws \Spryker\Zed\Kernel\Exception\Container\ContainerKeyNotFoundException
      */
     protected function getPermissionFacade(): CompanyTypeConverterToPermissionFacadeInterface
     {

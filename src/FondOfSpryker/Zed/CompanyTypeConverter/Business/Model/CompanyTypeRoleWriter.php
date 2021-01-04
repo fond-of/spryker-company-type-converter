@@ -1,6 +1,6 @@
 <?php
 
-namespace FondOfSpryker\Zed\CompanyTypeConverter\Business;
+namespace FondOfSpryker\Zed\CompanyTypeConverter\Business\Model;
 
 use FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeCreatedException;
 use FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeDeletedException;
@@ -30,6 +30,9 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
      */
     protected $companyTypeFacade;
 
+    /**
+     * @var \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeRoleFacadeInterface
+     */
     protected $companyTypeRoleFacade;
 
     /**
@@ -37,22 +40,30 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
      */
     protected $config;
 
-    protected $companyTypeConverterToPermissionFacade;
+    /**
+     * @var \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToPermissionFacadeInterface
+     */
+    protected $permissionFacade;
 
     /**
+     * CompanyTypeRoleWriter constructor.
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeInterface $companyRoleFacade
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeInterface $companyTypeFacade
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeRoleFacadeInterface $companyTypeRoleFacade
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToPermissionFacadeInterface $companyTypeConverterToPermissionFacade
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\CompanyTypeConverterConfig $config
      */
     public function __construct(
         CompanyTypeConverterToCompanyRoleFacadeInterface $companyRoleFacade,
         CompanyTypeConverterToCompanyTypeFacadeInterface $companyTypeFacade,
         CompanyTypeConverterToCompanyTypeRoleFacadeInterface $companyTypeRoleFacade,
-        CompanyTypeConverterToPermissionFacadeInterface $companyTypeConverterToPermissionFacade,
+        CompanyTypeConverterToPermissionFacadeInterface $permissionFacade,
         CompanyTypeConverterConfig $config
     ) {
         $this->companyRoleFacade = $companyRoleFacade;
         $this->companyTypeFacade = $companyTypeFacade;
         $this->companyTypeRoleFacade = $companyTypeRoleFacade;
-        $this->companyTypeConverterToPermissionFacade = $companyTypeConverterToPermissionFacade;
+        $this->permissionFacade = $permissionFacade;
         $this->config = $config;
     }
 
@@ -206,7 +217,7 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
             ->getCompanyTypeDefaultRoleMapping($companyTypeResponseTransfer->getCompanyTypeTransfer()->getName());
 
         foreach ($companyTypeDefaultRoleMapping as $roleName => $defaultRoleName) {
-            $companyRoleNames[] = $roleName;
+            $companyRoleNames[] = $defaultRoleName;
         }
 
         return $companyRoleNames;
@@ -225,7 +236,7 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
         $permissionKeys = $this->companyTypeRoleFacade
             ->getPermissionKeysByCompanyTypeAndCompanyRole($companyTypeTransfer, $companyRoleTransfer);
 
-        $availablePermissionCollectionTransfer = $this->companyTypeConverterToPermissionFacade
+        $availablePermissionCollectionTransfer = $this->permissionFacade
             ->findMergedRegisteredNonInfrastructuralPermissions();
 
         $permissionCollection = (new PermissionCollectionTransfer());

@@ -1,6 +1,6 @@
 <?php
 
-namespace FondOfSpryker\Zed\CompanyTypeConverter\Business;
+namespace FondOfSpryker\Zed\CompanyTypeConverter\Business\Model;
 
 use Generated\Shared\Transfer\CompanyRoleCollectionTransfer;
 use Generated\Shared\Transfer\CompanyTransfer;

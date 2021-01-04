@@ -2,7 +2,6 @@
 
 namespace FondOfSpryker\Zed\CompanyTypeConverter\Business\Model;
 
-use FondOfSpryker\Zed\CompanyTypeConverter\Business\CompanyTypeRoleWriterInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\CompanyTypeConverterConfig;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeInterface;
@@ -51,7 +50,7 @@ class CompanyTypeConverter implements CompanyTypeConverterInterface
     protected $companyTypeRoleWriter;
 
     /**
-     *
+     * CompanyTypeConverter constructor.
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeInterface $companyTypeFacade
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeInterface $companyRoleFacade
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyUserFacadeInterface $companyUserFacade
@@ -93,7 +92,7 @@ class CompanyTypeConverter implements CompanyTypeConverterInterface
      *
      * @return \Generated\Shared\Transfer\CompanyResponseTransfer
      */
-    public function executeConvertCompanyTypeTransaction(
+    protected function executeConvertCompanyTypeTransaction(
         CompanyTransfer $companyTransfer
     ): CompanyResponseTransfer {
         $companyTransfer = $this->companyTypeConverterPluginExecutor
@@ -152,9 +151,8 @@ class CompanyTypeConverter implements CompanyTypeConverterInterface
             $companyUserCompanyRoleCollection->addRole($defaultCompanyRoleTransfer);
         }
 
-        $this->companyRoleFacade->saveCompanyUser(
-            $companyUserTransfer->setCompanyRoleCollection($companyUserCompanyRoleCollection)
-        );
+        $companyUserTransfer->setCompanyRoleCollection($companyUserCompanyRoleCollection);
+        $this->companyRoleFacade->saveCompanyUser($companyUserTransfer);
     }
 
     /**
