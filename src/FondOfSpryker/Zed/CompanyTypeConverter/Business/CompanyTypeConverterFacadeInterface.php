@@ -17,9 +17,7 @@ interface CompanyTypeConverterFacadeInterface
      *
      * @return \Generated\Shared\Transfer\CompanyResponseTransfer
      */
-    public function convertCompanyType(
-        CompanyTransfer $companyTransfer
-    ): CompanyResponseTransfer;
+    public function convertCompanyType(CompanyTransfer $companyTransfer): CompanyResponseTransfer;
 
     /**
      * Specification:

@@ -2,7 +2,6 @@
 
 namespace FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade;
 
-
 use Generated\Shared\Transfer\CompanyTransfer;
 
 interface CompanyTypeConverterToCompanyFacadeInterface

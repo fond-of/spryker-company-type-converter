@@ -32,10 +32,8 @@ class CompanyTypeConverterCompanyPreSavePlugin extends AbstractPlugin implements
 
         $currentCompanyTransfer = $this->getFacade()->findCompanyById($companyTransfer);
 
-        if (
-            $currentCompanyTransfer === null
-            || $currentCompanyTransfer->getFkCompanyType() === $companyTransfer->getFkCompanyType()
-        ) {
+        if ($currentCompanyTransfer === null
+            || $currentCompanyTransfer->getFkCompanyType() === $companyTransfer->getFkCompanyType()) {
             return $companyResponseTransfer;
         }
 

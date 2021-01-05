@@ -14,22 +14,21 @@ class CompanyReader implements CompanyReaderInterface
 
     /**
      * CompanyReader constructor.
+     *
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyFacadeInterface $companyFacade
      */
-    public function __construct(
-        CompanyTypeConverterToCompanyFacadeInterface $companyFacade
-    ) {
+    public function __construct(CompanyTypeConverterToCompanyFacadeInterface $companyFacade)
+    {
         $this->companyFacade = $companyFacade;
     }
 
     /**
      * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
      *
-     * @return \Generated\Shared\Transfer\CompanyRoleCollectionTransfer
+     * @return \Generated\Shared\Transfer\CompanyTransfer
      */
-    public function findCompanyById(
-        CompanyTransfer $companyTransfer
-    ): CompanyTransfer {
+    public function findCompanyById(CompanyTransfer $companyTransfer): CompanyTransfer
+    {
         return $this->companyFacade->getCompanyById($companyTransfer);
     }
 }

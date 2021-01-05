@@ -10,10 +10,13 @@
   ],
   "require": {
     "php": ">=7.1",
+    "spryker/company": "^1.0.0",
     "spryker/company-role": "^1.0",
     "spryker/permission": "^1.2",
     "spryker/company-user": "^2.0.0",
-    "fond-of-spryker/company-type-role": "dev-master"
+    "fond-of-spryker/company-type": "dev-master",
+    "fond-of-spryker/company-type-role": "dev-master",
+    "fond-of-spryker/company-type-converter-extension": "dev-master"
   },
   "require-dev": {
     "codeception/codeception": "^2.4",

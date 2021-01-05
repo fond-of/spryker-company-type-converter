@@ -17,6 +17,7 @@ use Generated\Shared\Transfer\CompanyTransfer;
 use Generated\Shared\Transfer\CompanyTypeTransfer;
 use Generated\Shared\Transfer\PermissionCollectionTransfer;
 use Generated\Shared\Transfer\PermissionTransfer;
+use League\Csv\Exception;
 
 class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
 {
@@ -47,10 +48,11 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
 
     /**
      * CompanyTypeRoleWriter constructor.
+     *
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeInterface $companyRoleFacade
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeInterface $companyTypeFacade
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeRoleFacadeInterface $companyTypeRoleFacade
-     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToPermissionFacadeInterface $companyTypeConverterToPermissionFacade
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToPermissionFacadeInterface $permissionFacade
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\CompanyTypeConverterConfig $config
      */
     public function __construct(
@@ -71,12 +73,13 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
      * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
      *
      * @return \Generated\Shared\Transfer\CompanyRoleCollectionTransfer
+     *
+     * @throws \FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeCreatedException
+     * @throws \FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeDeletedException
      */
-    public function updateCompanyRoles(
-        CompanyTransfer $companyTransfer
-    ): CompanyRoleCollectionTransfer {
+    public function updateCompanyRoles(CompanyTransfer $companyTransfer): CompanyRoleCollectionTransfer
+    {
         $companyRoleCollectionTransfer = $this->saveCompanyRoles($companyTransfer);
-
         $companyTypeTransfer = (new CompanyTypeTransfer())->setIdCompanyType($companyTransfer->getFkCompanyType());
         $companyTypeResponseTransfer = $this->companyTypeFacade->findCompanyTypeById($companyTypeTransfer);
 
@@ -90,14 +93,13 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
     /**
      * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
      *
+     * @return \Generated\Shared\Transfer\CompanyRoleCollectionTransfer
+     *
      * @throws \FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeCreatedException
      * @throws \FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeDeletedException
-     *
-     * @return \Generated\Shared\Transfer\CompanyRoleCollectionTransfer
      */
-    protected function saveCompanyRoles(
-        CompanyTransfer $companyTransfer
-    ): CompanyRoleCollectionTransfer {
+    protected function saveCompanyRoles(CompanyTransfer $companyTransfer): CompanyRoleCollectionTransfer
+    {
         $companyRoleCriteriaFilterTransfer = (new CompanyRoleCriteriaFilterTransfer())
             ->setIdCompany($companyTransfer->getIdCompany());
         $companyRoleCollection = $this->companyRoleFacade
@@ -123,10 +125,7 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
 
         if (count($deleteCompanyRoles) > 0) {
             foreach ($deleteCompanyRoles as $companyRole) {
-                $companyRoleResponseTransfer = $this->deleteCompanyRole(
-                    $companyRoleCollection,
-                    $companyRole
-                );
+                $companyRoleResponseTransfer = $this->deleteCompanyRole($companyRoleCollection, $companyRole);
 
                 if ($companyRoleResponseTransfer === null
                     || $companyRoleResponseTransfer->getIsSuccessful() === false) {
@@ -165,7 +164,6 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
         CompanyRoleCollectionTransfer $companyRoleCollectionTransfer,
         string $companyRoleName
     ): ?CompanyRoleResponseTransfer {
-
         foreach ($companyRoleCollectionTransfer->getRoles() as $roleTransfer) {
             if ($roleTransfer->getName() !== $companyRoleName) {
                 continue;
@@ -184,9 +182,8 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
      *
      * @return string[]
      */
-    protected function getCurrentCompanyRoleNames(
-        CompanyRoleCollectionTransfer $companyRoleCollectionTransfer
-    ): array {
+    protected function getCurrentCompanyRoleNames(CompanyRoleCollectionTransfer $companyRoleCollectionTransfer): array
+    {
         $companyRoleNames = [];
 
         foreach ($companyRoleCollectionTransfer->getRoles() as $roleTransfer) {
@@ -201,11 +198,9 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
      *
      * @return string[]
      */
-    protected function getRequestedCompanyRoleNames(
-        CompanyTransfer $companyTransfer
-    ): array {
+    protected function getRequestedCompanyRoleNames(CompanyTransfer $companyTransfer): array
+    {
         $companyRoleNames = [];
-
         $companyTypeTransfer = (new CompanyTypeTransfer())->setIdCompanyType($companyTransfer->getFkCompanyType());
         $companyTypeResponseTransfer = $this->companyTypeFacade->findCompanyTypeById($companyTypeTransfer);
 
@@ -217,7 +212,7 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
             ->getCompanyTypeDefaultRoleMapping($companyTypeResponseTransfer->getCompanyTypeTransfer()->getName());
 
         foreach ($companyTypeDefaultRoleMapping as $roleName => $defaultRoleName) {
-            $companyRoleNames[] = $defaultRoleName;
+            $companyRoleNames[] = $roleName;
         }
 
         return $companyRoleNames;
@@ -226,8 +221,6 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
     /**
      * @param \Generated\Shared\Transfer\CompanyTypeTransfer $companyTypeTransfer
      * @param \Generated\Shared\Transfer\CompanyRoleTransfer $companyRoleTransfer
-     *
-     * @return void
      */
     protected function saveCompanyRolePermissions(
         CompanyTypeTransfer $companyTypeTransfer,
@@ -235,7 +228,6 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
     ): void {
         $permissionKeys = $this->companyTypeRoleFacade
             ->getPermissionKeysByCompanyTypeAndCompanyRole($companyTypeTransfer, $companyRoleTransfer);
-
         $availablePermissionCollectionTransfer = $this->permissionFacade
             ->findMergedRegisteredNonInfrastructuralPermissions();
 

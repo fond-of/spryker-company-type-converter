@@ -21,11 +21,9 @@ class CompanyTypeConverterFacade extends AbstractFacade implements CompanyTypeCo
      *
      * @return \Generated\Shared\Transfer\CompanyResponseTransfer
      */
-    public function convertCompanyType(
-        CompanyTransfer $companyTransfer
-    ): CompanyResponseTransfer {
-        return $this->getFactory()->createCompanyTypeConverter()
-            ->convertCompanyType($companyTransfer);
+    public function convertCompanyType(CompanyTransfer $companyTransfer): CompanyResponseTransfer
+    {
+        return $this->getFactory()->createCompanyTypeConverter()->convertCompanyType($companyTransfer);
     }
 
     /**
@@ -39,7 +37,6 @@ class CompanyTypeConverterFacade extends AbstractFacade implements CompanyTypeCo
      */
     public function findCompanyById(CompanyTransfer $companyTransfer): CompanyTransfer
     {
-        return $this->getFactory()->createCompanyReader()
-            ->findCompanyById($companyTransfer);
+        return $this->getFactory()->createCompanyReader()->findCompanyById($companyTransfer);
     }
 }

@@ -51,10 +51,11 @@ class CompanyTypeConverter implements CompanyTypeConverterInterface
 
     /**
      * CompanyTypeConverter constructor.
+     *
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeInterface $companyTypeFacade
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeInterface $companyRoleFacade
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyUserFacadeInterface $companyUserFacade
-     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Business\CompanyTypeRoleWriterInterface $companyTypeRoleWriter
+     * @param \FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeRoleWriterInterface $companyTypeRoleWriter
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\CompanyTypeConverterConfig $config
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeConverterPluginExecutorInterface $companyTypeConverterPluginExecutor
      */
@@ -69,9 +70,9 @@ class CompanyTypeConverter implements CompanyTypeConverterInterface
         $this->companyTypeFacade = $companyTypeFacade;
         $this->companyRoleFacade = $companyRoleFacade;
         $this->companyUserFacade = $companyUserFacade;
-        $this->config = $config;
         $this->companyTypeConverterPluginExecutor = $companyTypeConverterPluginExecutor;
         $this->companyTypeRoleWriter = $companyTypeRoleWriter;
+        $this->config = $config;
     }
 
     /**
@@ -79,9 +80,8 @@ class CompanyTypeConverter implements CompanyTypeConverterInterface
      *
      * @return \Generated\Shared\Transfer\CompanyResponseTransfer
      */
-    public function convertCompanyType(
-        CompanyTransfer $companyTransfer
-    ): CompanyResponseTransfer {
+    public function convertCompanyType(CompanyTransfer $companyTransfer): CompanyResponseTransfer
+    {
         return $this->getTransactionHandler()->handleTransaction(function () use ($companyTransfer) {
             return $this->executeConvertCompanyTypeTransaction($companyTransfer);
         });
@@ -92,14 +92,12 @@ class CompanyTypeConverter implements CompanyTypeConverterInterface
      *
      * @return \Generated\Shared\Transfer\CompanyResponseTransfer
      */
-    protected function executeConvertCompanyTypeTransaction(
-        CompanyTransfer $companyTransfer
-    ): CompanyResponseTransfer {
+    protected function executeConvertCompanyTypeTransaction(CompanyTransfer $companyTransfer): CompanyResponseTransfer
+    {
         $companyTransfer = $this->companyTypeConverterPluginExecutor
             ->executeCompanyTypeConverterPreSavePlugins($companyTransfer);
 
         $companyRoleCollectionTransfer = $this->companyTypeRoleWriter->updateCompanyRoles($companyTransfer);
-
         $companyUserCollectionTransfer = $this->companyUserFacade->getCompanyUserCollection(
             (new CompanyUserCriteriaFilterTransfer())->setIdCompany($companyTransfer->getIdCompany())
         );
