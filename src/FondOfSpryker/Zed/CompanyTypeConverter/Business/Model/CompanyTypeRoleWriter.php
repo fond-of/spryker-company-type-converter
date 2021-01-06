@@ -17,7 +17,6 @@ use Generated\Shared\Transfer\CompanyTransfer;
 use Generated\Shared\Transfer\CompanyTypeTransfer;
 use Generated\Shared\Transfer\PermissionCollectionTransfer;
 use Generated\Shared\Transfer\PermissionTransfer;
-use League\Csv\Exception;
 
 class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
 {
@@ -47,8 +46,6 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
     protected $permissionFacade;
 
     /**
-     * CompanyTypeRoleWriter constructor.
-     *
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeInterface $companyRoleFacade
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeInterface $companyTypeFacade
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeRoleFacadeInterface $companyTypeRoleFacade
@@ -73,9 +70,6 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
      * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
      *
      * @return \Generated\Shared\Transfer\CompanyRoleCollectionTransfer
-     *
-     * @throws \FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeCreatedException
-     * @throws \FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeDeletedException
      */
     public function updateCompanyRoles(CompanyTransfer $companyTransfer): CompanyRoleCollectionTransfer
     {
@@ -92,7 +86,7 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
 
     /**
      * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
-     *
+     * 
      * @return \Generated\Shared\Transfer\CompanyRoleCollectionTransfer
      *
      * @throws \FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeCreatedException
@@ -127,8 +121,10 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
             foreach ($deleteCompanyRoles as $companyRole) {
                 $companyRoleResponseTransfer = $this->deleteCompanyRole($companyRoleCollection, $companyRole);
 
-                if ($companyRoleResponseTransfer === null
-                    || $companyRoleResponseTransfer->getIsSuccessful() === false) {
+                if (
+                    $companyRoleResponseTransfer === null
+                    || $companyRoleResponseTransfer->getIsSuccessful() === false
+                ) {
                     throw new CompanyRoleCouldNotBeDeletedException('Company Role could not be deleted');
                 }
             }
@@ -221,6 +217,8 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
     /**
      * @param \Generated\Shared\Transfer\CompanyTypeTransfer $companyTypeTransfer
      * @param \Generated\Shared\Transfer\CompanyRoleTransfer $companyRoleTransfer
+     *
+     * @return void
      */
     protected function saveCompanyRolePermissions(
         CompanyTypeTransfer $companyTypeTransfer,

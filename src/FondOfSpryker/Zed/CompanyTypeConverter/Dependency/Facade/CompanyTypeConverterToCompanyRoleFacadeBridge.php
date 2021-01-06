@@ -35,6 +35,11 @@ class CompanyTypeConverterToCompanyRoleFacadeBridge implements CompanyTypeConver
         $this->companyRoleFacade->saveCompanyUser($companyUserTransfer);
     }
 
+    /**
+     * @param \Generated\Shared\Transfer\CompanyRoleTransfer $companyRoleTransfer
+     *
+     * @return \Generated\Shared\Transfer\CompanyRoleResponseTransfer
+     */
     public function create(CompanyRoleTransfer $companyRoleTransfer): CompanyRoleResponseTransfer
     {
         return $this->companyRoleFacade->create($companyRoleTransfer);

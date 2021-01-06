@@ -76,7 +76,6 @@ class CompanyTypeConverterDependencyProvider extends AbstractBundleDependencyPro
         return $container;
     }
 
-
     /**
      * @param \Spryker\Zed\Kernel\Container $container
      *

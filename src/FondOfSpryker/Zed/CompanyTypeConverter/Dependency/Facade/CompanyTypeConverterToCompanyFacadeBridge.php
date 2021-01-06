@@ -13,8 +13,6 @@ class CompanyTypeConverterToCompanyFacadeBridge implements CompanyTypeConverterT
     protected $companyFacade;
 
     /**
-     * CompanyTypeConverterToCompanyFacadeBridge constructor.
-     *
      * @param \Spryker\Zed\Company\Business\CompanyFacadeInterface $companyFacade
      */
     public function __construct(CompanyFacadeInterface $companyFacade)

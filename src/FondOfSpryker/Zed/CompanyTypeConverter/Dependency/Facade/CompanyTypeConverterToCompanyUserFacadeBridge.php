@@ -23,7 +23,7 @@ class CompanyTypeConverterToCompanyUserFacadeBridge implements CompanyTypeConver
 
     /**
      * @param \Generated\Shared\Transfer\CompanyUserCriteriaFilterTransfer $companyUserCriteriaFilterTransfer
-     * 
+     *
      * @return \Generated\Shared\Transfer\CompanyUserCollectionTransfer
      */
     public function getCompanyUserCollection(

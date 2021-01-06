@@ -17,7 +17,6 @@ use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverte
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeRoleFacadeInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyUserFacadeInterface;
 use FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToPermissionFacadeInterface;
-use PHPUnit\Util\Exception;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 
 /**
@@ -43,7 +42,6 @@ class CompanyTypeConverterBusinessFactory extends AbstractBusinessFactory
 
     /**
      * @return \FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeRoleWriterInterface
-     * @throws \Spryker\Zed\Kernel\Exception\Container\ContainerKeyNotFoundException
      */
     protected function createCompanyTypeRoleWriter(): CompanyTypeRoleWriterInterface
     {
@@ -58,7 +56,6 @@ class CompanyTypeConverterBusinessFactory extends AbstractBusinessFactory
 
     /**
      * @return \FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyReaderInterface
-     * @throws \Spryker\Zed\Kernel\Exception\Container\ContainerKeyNotFoundException
      */
     public function createCompanyReader(): CompanyReaderInterface
     {
@@ -96,7 +93,6 @@ class CompanyTypeConverterBusinessFactory extends AbstractBusinessFactory
 
     /**
      * @return \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyFacadeInterface
-     * @throws \Spryker\Zed\Kernel\Exception\Container\ContainerKeyNotFoundException
      */
     protected function getCompanyFacade(): CompanyTypeConverterToCompanyFacadeInterface
     {
@@ -105,7 +101,6 @@ class CompanyTypeConverterBusinessFactory extends AbstractBusinessFactory
 
     /**
      * @return \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToPermissionFacadeInterface
-     * @throws \Spryker\Zed\Kernel\Exception\Container\ContainerKeyNotFoundException
      */
     protected function getPermissionFacade(): CompanyTypeConverterToPermissionFacadeInterface
     {

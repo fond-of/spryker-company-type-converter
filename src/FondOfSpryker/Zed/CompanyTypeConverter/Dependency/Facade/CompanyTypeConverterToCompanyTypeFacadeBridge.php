@@ -21,6 +21,11 @@ class CompanyTypeConverterToCompanyTypeFacadeBridge implements CompanyTypeConver
         $this->companyTypeFacade = $companyTypeFacade;
     }
 
+    /**
+     * @param \Generated\Shared\Transfer\CompanyTypeTransfer $companyTypeTransfer
+     *
+     * @return \Generated\Shared\Transfer\CompanyTypeResponseTransfer
+     */
     public function findCompanyTypeById(CompanyTypeTransfer $companyTypeTransfer): CompanyTypeResponseTransfer
     {
         return $this->companyTypeFacade->findCompanyTypeById($companyTypeTransfer);

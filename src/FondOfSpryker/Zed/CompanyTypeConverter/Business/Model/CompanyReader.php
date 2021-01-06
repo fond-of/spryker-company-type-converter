@@ -13,8 +13,6 @@ class CompanyReader implements CompanyReaderInterface
     protected $companyFacade;
 
     /**
-     * CompanyReader constructor.
-     *
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyFacadeInterface $companyFacade
      */
     public function __construct(CompanyTypeConverterToCompanyFacadeInterface $companyFacade)

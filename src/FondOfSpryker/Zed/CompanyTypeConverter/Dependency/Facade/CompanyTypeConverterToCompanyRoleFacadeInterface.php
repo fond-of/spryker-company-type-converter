@@ -43,11 +43,15 @@ interface CompanyTypeConverterToCompanyRoleFacadeInterface
 
     /**
      * @param \Generated\Shared\Transfer\PermissionTransfer $permissionTransfer
+     *
+     * @return void
      */
     public function updateCompanyRolePermission(PermissionTransfer $permissionTransfer): void;
 
     /**
      * @param \Generated\Shared\Transfer\CompanyRoleTransfer $companyRoleTransfer
+     *
+     * @return void
      */
     public function update(CompanyRoleTransfer $companyRoleTransfer): void;
 }

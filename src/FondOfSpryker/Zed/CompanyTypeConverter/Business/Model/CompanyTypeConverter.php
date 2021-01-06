@@ -50,8 +50,6 @@ class CompanyTypeConverter implements CompanyTypeConverterInterface
     protected $companyTypeRoleWriter;
 
     /**
-     * CompanyTypeConverter constructor.
-     *
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyTypeFacadeInterface $companyTypeFacade
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyRoleFacadeInterface $companyRoleFacade
      * @param \FondOfSpryker\Zed\CompanyTypeConverter\Dependency\Facade\CompanyTypeConverterToCompanyUserFacadeInterface $companyUserFacade
