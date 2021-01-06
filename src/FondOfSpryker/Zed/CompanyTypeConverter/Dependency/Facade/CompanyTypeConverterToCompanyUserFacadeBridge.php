@@ -9,7 +9,7 @@ use Spryker\Zed\CompanyUser\Business\CompanyUserFacadeInterface;
 class CompanyTypeConverterToCompanyUserFacadeBridge implements CompanyTypeConverterToCompanyUserFacadeInterface
 {
     /**
-     * @var \Spryker\Zed\CompanyUser\Business\CompanyUserFacadeInterfac
+     * @var \Spryker\Zed\CompanyUser\Business\CompanyUserFacadeInterface
      */
     protected $companyUserFacade;
 
@@ -22,9 +22,9 @@ class CompanyTypeConverterToCompanyUserFacadeBridge implements CompanyTypeConver
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyTransfer|null
+     * @param \Generated\Shared\Transfer\CompanyUserCriteriaFilterTransfer $companyUserCriteriaFilterTransfer
+     * 
+     * @return \Generated\Shared\Transfer\CompanyUserCollectionTransfer
      */
     public function getCompanyUserCollection(
         CompanyUserCriteriaFilterTransfer $companyUserCriteriaFilterTransfer

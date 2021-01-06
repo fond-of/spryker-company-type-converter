@@ -178,7 +178,7 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
+     * @param \Generated\Shared\Transfer\CompanyRoleCollectionTransfer $companyRoleCollectionTransfer
      *
      * @return string[]
      */
@@ -204,7 +204,7 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
         $companyTypeTransfer = (new CompanyTypeTransfer())->setIdCompanyType($companyTransfer->getFkCompanyType());
         $companyTypeResponseTransfer = $this->companyTypeFacade->findCompanyTypeById($companyTypeTransfer);
 
-        if ($companyTypeResponseTransfer === null) {
+        if ($companyTypeResponseTransfer->getIsSuccessful() === false) {
             return $companyRoleNames;
         }
 

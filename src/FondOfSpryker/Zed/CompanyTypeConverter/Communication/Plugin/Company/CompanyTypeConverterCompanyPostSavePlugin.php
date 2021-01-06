@@ -31,7 +31,7 @@ class CompanyTypeConverterCompanyPostSavePlugin extends AbstractPlugin implement
         }
 
         if ($companyTransfer->getIsCompanyTypeModified() === null
-            && $companyTransfer->getIsCompanyTypeModified() === false) {
+            || $companyTransfer->getIsCompanyTypeModified() === false) {
             return $companyResponseTransfer;
         }
 

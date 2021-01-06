@@ -45,7 +45,7 @@ class CompanyTypeConverter implements CompanyTypeConverterInterface
     protected $config;
 
     /**
-     * @var \FondOfSpryker\Zed\CompanyTypeConverter\Business\CompanyTypeRoleWriterInterface
+     * @var \FondOfSpryker\Zed\CompanyTypeConverter\Business\Model\CompanyTypeRoleWriterInterface
      */
     protected $companyTypeRoleWriter;
 

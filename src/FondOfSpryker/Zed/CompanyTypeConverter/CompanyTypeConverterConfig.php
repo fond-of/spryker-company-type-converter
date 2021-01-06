@@ -10,7 +10,7 @@ class CompanyTypeConverterConfig extends AbstractBundleConfig
     /**
      * @param string $companyType
      *
-     * @return string
+     * @return string[]
      */
     public function getCompanyTypeDefaultRoleMapping(string $companyType = ''): array
     {
@@ -21,7 +21,7 @@ class CompanyTypeConverterConfig extends AbstractBundleConfig
         }
 
         if (!isset($companyTypeDefaultRolesMapping[$companyType])) {
-            return '';
+            return [];
         }
 
         return $companyTypeDefaultRolesMapping[$companyType];
