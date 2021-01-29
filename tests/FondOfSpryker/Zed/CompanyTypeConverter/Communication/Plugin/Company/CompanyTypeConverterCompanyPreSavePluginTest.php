@@ -51,7 +51,7 @@ class CompanyTypeConverterCompanyPreSavePluginTest extends Unit
 
         $this->companyTransferMock = $this->getMockBuilder(CompanyTransfer::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getFkCompanyType','setIsCompanyTypeModified', 'setFkOldCompanyType'])
+            ->onlyMethods(['getFkCompanyType', 'getIdCompany', 'setIsCompanyTypeModified', 'setFkOldCompanyType'])
             ->getMock();
 
         $this->currentCompanyTransferMock = $this->getMockBuilder(CompanyTransfer::class)
@@ -68,6 +68,7 @@ class CompanyTypeConverterCompanyPreSavePluginTest extends Unit
     public function testPreSaveValidation(): void
     {
         $idCompanyType = 2;
+        $idCompany = 1;
         $currentIdCompanyType = 1;
         $this->companyResponseTransferMock->expects($this->atLeastOnce())
             ->method('getCompanyTransfer')
@@ -76,6 +77,10 @@ class CompanyTypeConverterCompanyPreSavePluginTest extends Unit
         $this->companyTransferMock->expects($this->atLeastOnce())
             ->method('getFkCompanyType')
             ->willReturn($idCompanyType);
+
+        $this->companyTransferMock->expects($this->atLeastOnce())
+            ->method('getIdCompany')
+            ->willReturn($idCompany);
 
         $this->companyTypeConverterFacadeMock->expects($this->atLeastOnce())
             ->method('findCompanyById')
