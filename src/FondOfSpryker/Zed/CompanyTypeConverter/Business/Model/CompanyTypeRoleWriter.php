@@ -86,7 +86,7 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
 
     /**
      * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
-     * 
+     *
      * @return \Generated\Shared\Transfer\CompanyRoleCollectionTransfer
      *
      * @throws \FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeCreatedException
