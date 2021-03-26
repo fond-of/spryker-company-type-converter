@@ -87,10 +87,10 @@ class CompanyTypeRoleWriter implements CompanyTypeRoleWriterInterface
     /**
      * @param \Generated\Shared\Transfer\CompanyTransfer $companyTransfer
      *
-     * @return \Generated\Shared\Transfer\CompanyRoleCollectionTransfer
-     *
      * @throws \FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeCreatedException
      * @throws \FondOfSpryker\Zed\CompanyTypeConverter\Business\Exception\CompanyRoleCouldNotBeDeletedException
+     *
+     * @return \Generated\Shared\Transfer\CompanyRoleCollectionTransfer
      */
     protected function saveCompanyRoles(CompanyTransfer $companyTransfer): CompanyRoleCollectionTransfer
     {
